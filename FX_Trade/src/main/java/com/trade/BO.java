@@ -133,7 +133,7 @@ public class BO implements FXImplementation {
                 if(currentPrice >= candlePrice){
                     tradeCurrency();
                 }
-                System.out.println("Purchased successfully....");
+                System.out.println("Purchased successfully.... .");
             }
         },date, 24*60*60*1000);
 
