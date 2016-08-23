@@ -6,7 +6,8 @@ package com.trade;
 public interface FXImplementation {
 
     public void tradeCurrency();
-    public void getLastDayCandles();
+    public void sellCurrency();
+    public void getLast30Candles();
     public void getLastestPrice();
     public void executeQuery(ProcessBuilder pb, String arrayName,String listName, String status)throws Exception;
     public void readJSON(String arrayName, String itemName,String status);
