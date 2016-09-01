@@ -3,9 +3,9 @@ package com.trade;
 /**
  * Created by sonalasija on 8/15/16.
  */
-public interface FXImplementation {
+public interface FXInterface {
 
-    public void tradeCurrency();
+    public void buyCurrency();
     public void sellCurrency();
     public void getLast30Candles();
     public void getLastestPrice();

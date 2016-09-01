@@ -21,7 +21,6 @@ import java.util.function.Predicate;
 public class Helper implements Runnable {
 
 	static Map<Double, Double> orderMap = new LinkedHashMap<Double, Double>();
-	BO bo = new BO();
 
 	public void run() {
 
@@ -77,10 +76,7 @@ public class Helper implements Runnable {
 						double ask = Double.parseDouble(tick.get("ask").toString());
 						orderMap.put(bid, ask);
 						// bo.sendMap(orderMap);
-						// System.out.println(instrument);
-						// System.out.println(time);
-						// System.out.println(bid);
-						// System.out.println(ask);
+
 					}
 				}
 			} else {
