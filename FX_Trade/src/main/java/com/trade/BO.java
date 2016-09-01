@@ -9,6 +9,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,39 +25,30 @@ public class BO implements FXImplementation {
 	    public String json="";
 	    public String jsonPrice="";
 	    public  double currentPrice ;
-	    public double bestPrice,worstPrice;
+	    public double bestPrice,worstPrice,streamingBid,streamingAsk;
 	    public ArrayList<Double> highestPrice=new ArrayList<Double>();
 	    public ArrayList<Double> lowestPrice=new ArrayList<Double>();
-	    JSONObject jObj = null;
+	    public JSONObject jObj = null;
+	    public RetrieveHelper retrieveHelper=new RetrieveHelper();
+	    public HashMap hashMap;
 
 
 	    public void tradeCurrency() {
-	        ProcessBuilder pb = new ProcessBuilder(
-	                "curl",
-	                "-X",
-	                "POST",
-	                "-d",
-	                "instrument=EUR_USD&units=14&side=buy&type=market",
-	                "https://api-fxpractice.oanda.com/v1/accounts/9303001/orders", "-H",
-	                "Authorization: Bearer cba08e9d19b2846910876522b7e09b0a-bcf4ed08cff35e4a9ffd5dcbbb7e6f16",
-	                "https://api-fxpractice.oanda.com/v1/accounts");
-
-	        try {
-	            executeQuery(pb,"","","none");
-	        }catch (Exception e) {
-	            System.out.println(e);
-	        }
-
+	        buyOrSell("buy");
 	    }
 
 
 	    public void sellCurrency() {
+	       buyOrSell("sell");
+	    }
+
+	    public void buyOrSell(String param){
 	        ProcessBuilder pb = new ProcessBuilder(
 	                "curl",
 	                "-X",
 	                "POST",
 	                "-d",
-	                "instrument=EUR_USD&units=14&side=sell&type=market",
+	                "instrument=EUR_USD&units=14&side="+param+"&type=market",
 	                "https://api-fxpractice.oanda.com/v1/accounts/9303001/orders", "-H",
 	                "Authorization: Bearer cba08e9d19b2846910876522b7e09b0a-bcf4ed08cff35e4a9ffd5dcbbb7e6f16",
 	                "https://api-fxpractice.oanda.com/v1/accounts");
@@ -63,7 +58,6 @@ public class BO implements FXImplementation {
 	        }catch (Exception e) {
 	            System.out.println(e);
 	        }
-
 	    }
 
 	    public void getLastestPrice() {
@@ -94,7 +88,7 @@ public class BO implements FXImplementation {
 	        sb = new StringBuilder();
 	        BufferedReader br = new BufferedReader(new InputStreamReader(is));
 	        while ((line = br.readLine()) != null) {
-	            System.out.println(line);
+	           // System.out.println(line);
 	            sb.append(line + "\n");
 	        }
 	        if(!status.equals("none")) {
@@ -139,36 +133,61 @@ public class BO implements FXImplementation {
 	        }
 	    }
 
-	    public void runEveryDay() {
-	        getLastestPrice();
-	        getLast30Candles();
-	        bestPrice=Collections.max(highestPrice);
-	        worstPrice=Collections.min(lowestPrice);
+//	    public Map sendMap(Map orderMap){
+//	        System.out.println("size of map in  bo : "+orderMap.size());
+//	        return orderMap;
+//	    }
 
+	    public void getHashMapStreamingValues(){
+	        hashMap=retrieveHelper.printValues();
+	        Set set = hashMap.entrySet();
+	        // Get an iterator
+	        Iterator i = set.iterator();
+	        // Display elements
+	        while(i.hasNext()) {
+	            Map.Entry me = (Map.Entry)i.next();
+	             streamingAsk=(Double)me.getValue();
+	            streamingBid=(Double)me.getKey();
+	            System.out.println("hashmap ask--->"+streamingAsk);
+	            System.out.println("hashmap bid--->"+streamingBid);
+	            //System.out.print(me.getKey() + "<--- bid: ask-->");
+	            //System.out.println(me.getValue());
+	        }
+	    }
+
+	    public void runEveryDay() {
 	        Date date=new Date();
 	        Timer timer = new Timer();
 
 	        timer.schedule(new TimerTask(){
 	            public void run(){
+	               // getLastestPrice();
+	                getLast30Candles();
+	                getHashMapStreamingValues();
+	                bestPrice=Collections.max(highestPrice);
+	                worstPrice=Collections.min(lowestPrice);
+
 	                System.out.println("Fetching some values and performing accordingly... "+new Date());
 
-	                if(currentPrice > bestPrice){
+	                if(streamingAsk > bestPrice){
 	                    tradeCurrency();
 	                    System.out.println("Purchased successfully...");
-	                }else if(currentPrice < worstPrice){
+	                }else if(streamingAsk < worstPrice){
 	                    sellCurrency();
 	                    System.out.println("Sold successfully...");
 	                }else{
 	                    System.out.println(" No transaction Performed today...");
 	                }
 	                System.out.println(" Todays Report :- ");
-	                System.out.println(currentPrice+"<---currentprice---bestprice--->"+bestPrice);
-	                System.out.println(currentPrice+"<---currentprice---worstprice--->"+worstPrice);
+	                System.out.println(streamingAsk+"<---currentprice---bestprice--->"+bestPrice);
+	                System.out.println(streamingAsk+"<---currentprice---worstprice--->"+worstPrice);
 	                highestPrice.clear();
 	                lowestPrice.clear();
 	            }
-	        },date, 24*60*60*1000);
+	        },date, 10000);
 
 	    }
+
+
 
 	}
