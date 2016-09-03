@@ -22,15 +22,15 @@ import java.util.TimerTask;
 public class MethodImplementing implements FXInterface {
 
 	public StringBuilder sb;
-	public String json = "";
-	public String jsonPrice = "";
-	public double currentPrice;
-	public double highestPrice, lowestPrice, streamingBid, streamingAsk;
+	public String json = "",jsonPrice = "";
+	public double highestPrice, lowestPrice, streamingBid, streamingAsk,currentPrice;;
 	public ArrayList<Double> high_Price = new ArrayList<Double>();
 	public ArrayList<Double> low_Price = new ArrayList<Double>();
 	public JSONObject jObj = null;
 	public RetrieveHelper retrieveHelper = new RetrieveHelper();
 	public HashMap hashMap;
+	public int count = 0;
+	public boolean starttimer = true;
 
 	public void buyCurrency() {
 		buyOrSell("buy");
@@ -154,10 +154,21 @@ public class MethodImplementing implements FXInterface {
 				System.out.println("Fetching some values and performing accordingly... " + new Date());
 
 				if (streamingAsk > highestPrice) {
-					buyCurrency();
-					System.out.println("Purchased successfully...");
+
+					if (count == 0) {
+						 buyCurrency();
+						System.out.println("Purchased successfully...");
+						starttimer = false;
+					}
+					if (count == 17280) {
+						starttimer = true;
+						count = 0;
+					}
+					if (count > 0)
+						System.out.println("Only one purchase for the day");
+
 				} else if (streamingAsk < lowestPrice) {
-					sellCurrency();
+					   sellCurrency();
 					System.out.println("Sold successfully...");
 				} else {
 					System.out.println(" No transaction Performed today...");
@@ -167,8 +178,14 @@ public class MethodImplementing implements FXInterface {
 				System.out.println(streamingAsk + "<---currentprice---worstprice--->" + lowestPrice);
 				high_Price.clear();
 				low_Price.clear();
+				if (!starttimer) {
+					count++;
+				}
+				if (count == 17280) {
+					starttimer = true;
+				}
 			}
-		}, date, 10000);
+		}, date, 5000);
 
 	}
 
