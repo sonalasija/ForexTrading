@@ -21,16 +21,16 @@ import java.util.TimerTask;
  */
 public class MethodImplementing implements FXInterface {
 
-	public StringBuilder sb;
-	public String json = "",jsonPrice = "";
-	public double highestPrice, lowestPrice, streamingBid, streamingAsk,currentPrice;;
-	public ArrayList<Double> high_Price = new ArrayList<Double>();
-	public ArrayList<Double> low_Price = new ArrayList<Double>();
-	public JSONObject jObj = null;
-	public RetrieveHelper retrieveHelper = new RetrieveHelper();
-	public HashMap hashMap;
-	public int count = 0;
-	public boolean starttimer = true;
+	private StringBuilder sb;
+	private String json = "",jsonPrice = "";
+	private double highestPrice, lowestPrice, streamingBid, streamingAsk,currentPrice;;
+	private ArrayList<Double> high_Price = new ArrayList<Double>();
+	private ArrayList<Double> low_Price = new ArrayList<Double>();
+	private JSONObject jObj = null;
+	private RetrieveHelper retrieveHelper = new RetrieveHelper();
+	private HashMap hashMap;
+	private int count = 0;
+	private boolean starttimer = true;
 
 	public void buyCurrency() {
 		buyOrSell("buy");
