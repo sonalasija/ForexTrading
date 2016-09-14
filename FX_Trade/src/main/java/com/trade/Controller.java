@@ -1,7 +1,7 @@
 package com.trade;
 
 /**
- * Created by sonalasija on 8/10/16.
+ *  Created by sonalasija on 8/10/16.
  */
 
 public class Controller {
@@ -15,7 +15,7 @@ public class Controller {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		new MethodImplementing().runEveryDay();
+		new MethodImplementing().runEveryDay(); 
 
 	}
 }

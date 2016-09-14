@@ -38,7 +38,7 @@ public class Helper implements Runnable {
 
 		try {
 
-			// Set these variables to whatever personal ones are preferred
+			// Set  these variables to whatever personal ones are preferred
 			String domain = "https://stream-fxpractice.oanda.com";
 			String access_token = "cba08e9d19b2846910876522b7e09b0a-bcf4ed08cff35e4a9ffd5dcbbb7e6f16";
 			String account_id = "9303001";
